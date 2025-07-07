@@ -6,8 +6,28 @@
     <title>Document</title>
 </head>
 <body>
-    <div>
+    <p>
         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Modi quod itaque asperiores aliquid sed repellat explicabo molestias commodi ad quos ipsam repellendus, atque suscipit consequatur, nobis fugiat? Eligendi, maiores aspernatur?
+    </p>
+
+    <!-- This is where will inject the js variable -->
+    <div id="app">
+            <span> {{ test }} </span>
+            <span> {{ name}} </span>
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.7.16/vue.min.js" integrity="sha512-Wx8niGbPNCD87mSuF0sBRytwW2+2ZFr7HwVDF8krCb3egstCc4oQfig+/cfg2OHd82KcUlOYxlSDAqdHqK5TCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+   <!-- Create a vue object and bind it to the div above-->
+    <script>
+        new Vue({
+            el:'#app',
+
+            data:{
+                test:"mytest",
+                name:"Doe"
+            }
+        });
+    </script>
 </body>
 </html>
