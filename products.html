@@ -28,6 +28,17 @@
     </nav>
 
     <div id="app" class="container mt-4">
+
+        <!-- Form -->
+        <form @submit.prevent="saveProduct">
+            <label>Name</label><input v-model="name" type="text">
+            <label>Buying Price</label><input v-model="buying_price" type="number">
+            <label>Selling Price</label><input v-model="selling_price" type="number">
+            <button type="submit">Save Products</button>
+        </form>
+
+        <span :style="{color : textcolor}"> {{ message }} </span>
+
         <!-- Populate products from our Flask API -->
         <table id="productsTable" class="table table-striped table-bordered">
             <thead>
@@ -62,23 +73,56 @@
         new Vue({
             el: "#app",
             data: {
-                products: []
+                products: [],
+                name: "",
+                buying_price: "",
+                selling_price: "",
+                message: "",
+                textcolor: "black"
+            },
+            methods: {
+                getProducts() {
+                    axios.get('http://127.0.0.1:5000/api/products')
+                        .then(result => {
+                            console.log(result.data)
+                            this.products = result.data;
+                            this.$nextTick(() => {
+                                $('#productsTable').DataTable();
+                            });
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        });
+                },
+                saveProduct() {
+                    if (this.name == "" || this.buying_price == "" || this.selling_price == "") {
+                        this.textcolor = "red"
+                        this.message = "Ensure all fields are set"
+                    }
+                    else {
+                        const data = {
+                            "name": this.name,
+                            "buying_price": this.buying_price,
+                            "selling_price": this.selling_price
+                        }
+                        axios.post('http://127.0.0.1:5000/api/products', data)
+                            .then(res => {
+                                this.textcolor = "green"
+                                this.message = "Product added successfully!"
+                                this.name = ""
+                                this.buying_price = ""
+                                this.selling_price = ""
+                                this.getProducts();
+                            })
+                    }
+                }
             },
             mounted() {
-                axios.get('http://127.0.0.1:5000/api/products')
-                    .then(result => {
-                        console.log(result.data)
-                        this.products = result.data;
-                        this.$nextTick(() => {
-                            $('#productsTable').DataTable();
-                        });
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
+                this.getProducts(); // fixed call
             }
         });
     </script>
+
 </body>
 
 </html>
