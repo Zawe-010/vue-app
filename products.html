@@ -11,36 +11,104 @@
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #8e44ad;">
+    <nav class="navbar navbar-expand-lg" style="background-color: #8e44ad;">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">MyDuka</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
+            <a class="navbar-brand" href="#" style="color: white; font-weight: bold;">MyDuka</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                style="border-color: white;">
+                <span class="navbar-toggler-icon" style="filter: brightness(0) invert(1);"></span>
             </button>
-            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="products.html">Products</a></li>
-                    <li class="nav-item"><a class="nav-link" href="sales.html">Sales</a></li>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- Centered Links -->
+                <ul class="navbar-nav position-absolute top-50 start-50 translate-middle">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html" style="color: white;">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="products.html" style="color: white;">Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="sales.html" style="color: white;">Sales</a>
+                    </li>
+                </ul>
+
+                <!-- Right-aligned Register/Login -->
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="register.html" style="color: white;">Register</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html" style="color: white;">Login</a>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div id="app" class="container mt-4">
 
-        <!-- Form -->
-        <form @submit.prevent="saveProduct">
-            <label>Name</label><input v-model="name" type="text">
-            <label>Buying Price</label><input v-model="buying_price" type="number">
-            <label>Selling Price</label><input v-model="selling_price" type="number">
-            <button type="submit">Save Products</button>
-        </form>
+    <div id="app" class="container mt-4">
+        <!-- Loader Spinner -->
+        <div v-if="loading" class="text-center my-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+
+        <button @click.prevent="logout" class="btn btn-danger btn-sm float-end mb-3">Logout</button>
+
+        <br>
+        <br>
+
+        <!-- Add Product Button -->
+        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#productModal">
+            Add Product
+        </button>
+
+        <!-- Product Modal -->
+        <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <form @submit.prevent="saveProduct">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="productModalLabel">Add Product</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">Name</label>
+                                <input v-model="name" type="text" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Buying Price</label>
+                                <input v-model="buying_price" type="number" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Selling Price</label>
+                                <input v-model="selling_price" type="number" class="form-control" required>
+                            </div>
+                            <div class="text-center" v-if="loading">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                            <div class="text-center mt-2" :style="{ color: textcolor }">{{ message }}</div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save Product</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
 
         <span :style="{color : textcolor}"> {{ message }} </span>
 
-        <!-- Populate products from our Flask API -->
-        <table id="productsTable" class="table table-striped table-bordered">
+        <!-- Products Table -->
+        <table id="productsTable" class="table table-striped table-bordered mt-4">
             <thead>
                 <tr>
                     <th> ID</th>
@@ -50,8 +118,7 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Loop through the products from the API -->
-                <tr v-for="prod in products">
+                <tr v-for="prod in products" :key="prod.id">
                     <td> {{ prod.id }}</td>
                     <td> {{ prod.name }}</td>
                     <td> {{ prod.buying_price }}</td>
@@ -78,13 +145,17 @@
                 buying_price: "",
                 selling_price: "",
                 message: "",
-                textcolor: "black"
+                textcolor: "black",
+                loading: false
             },
             methods: {
                 getProducts() {
-                    axios.get('http://127.0.0.1:5000/api/products')
+                    this.loading = true;
+                    const myheader = {
+                        headers: { 'Authorization': 'Bearer ' + localStorage.getItem("token") }
+                    };
+                    axios.get('http://127.0.0.1:5000/api/products', myheader)
                         .then(result => {
-                            console.log(result.data)
                             this.products = result.data;
                             this.$nextTick(() => {
                                 $('#productsTable').DataTable();
@@ -92,37 +163,61 @@
                         })
                         .catch(error => {
                             console.log(error);
+                        })
+                        .finally(() => {
+                            this.loading = false;
                         });
                 },
                 saveProduct() {
-                    if (this.name == "" || this.buying_price == "" || this.selling_price == "") {
-                        this.textcolor = "red"
-                        this.message = "Ensure all fields are set"
+                    if (this.name === "" || this.buying_price === "" || this.selling_price === "") {
+                        this.textcolor = "red";
+                        this.message = "Ensure all fields are set";
+                        return;
                     }
-                    else {
-                        const data = {
-                            "name": this.name,
-                            "buying_price": this.buying_price,
-                            "selling_price": this.selling_price
-                        }
-                        axios.post('http://127.0.0.1:5000/api/products', data)
-                            .then(res => {
-                                this.textcolor = "green"
-                                this.message = "Product added successfully!"
-                                this.name = ""
-                                this.buying_price = ""
-                                this.selling_price = ""
-                                this.getProducts();
-                            })
-                    }
+
+                    this.loading = true;
+                    const data = {
+                        name: this.name,
+                        buying_price: this.buying_price,
+                        selling_price: this.selling_price
+                    };
+                    const myheader = {
+                        headers: { 'Authorization': 'Bearer ' + localStorage.getItem("token") }
+                    };
+
+                    axios.post('http://127.0.0.1:5000/api/products', data, myheader)
+                        .then(res => {
+                            this.textcolor = "green";
+                            this.message = "Product added successfully!";
+                            this.name = "";
+                            this.buying_price = "";
+                            this.selling_price = "";
+                            this.getProducts();
+                        })
+                        .catch(err => {
+                            this.textcolor = "red";
+                            this.message = "Error saving product.";
+                            console.log(err);
+                        })
+                        .finally(() => {
+                            this.loading = false;
+                        });
+                },
+                logout() {
+                    localStorage.removeItem("token");
+                    window.location.href = "login.html";
                 }
             },
             mounted() {
-                this.getProducts(); // fixed call
+                if (localStorage.getItem("token") == null) {
+                    window.location.href = "login.html";
+                } else {
+                    this.getProducts();
+                    console.log(localStorage.getItem("token"));
+                }
             }
         });
     </script>
-
 </body>
 
 </html>
