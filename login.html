@@ -125,6 +125,7 @@
                     })
                         .then(res => {
                             localStorage.setItem("token", res.data.token);
+                            console.log("Token:", res.data.token);
                             this.loggedIn = true;
                             window.location.href = "products.html";
                         })
