@@ -9,68 +9,95 @@
 </head>
 
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg" style="background-color: #8e44ad;">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#" style="color: white; font-weight: bold;">MyDuka</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                style="border-color: white;">
-                <span class="navbar-toggler-icon" style="filter: brightness(0) invert(1);"></span>
-            </button>
+    <div id="app">
+        <!-- Standardized Navbar -->
+        <nav class="navbar navbar-expand-lg" style="background-color: #8e44ad;">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#" style="color: white; font-weight: bold;">MyDuka</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    style="border-color: white;">
+                    <span class="navbar-toggler-icon" style="filter: brightness(0) invert(1);"></span>
+                </button>
 
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <!-- Centered Links -->
-                <ul class="navbar-nav position-absolute top-50 start-50 translate-middle">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="index.html" style="color: white;">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="products.html" style="color: white;">Products</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="sales.html" style="color: white;">Sales</a>
-                    </li>
-                </ul>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <!-- Centered Links -->
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="index.html">Home</a>
+                        </li>
 
-                <!-- Right-aligned Register/Login -->
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="register.html" style="color: white;">Register</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="login.html" style="color: white;">Login</a>
-                    </li>
-                </ul>
+                        <!-- Show if NOT logged in -->
+                        <template v-if="!loggedIn">
+                            <li class="nav-item mx-2">
+                                <a class="nav-link text-white" href="register.html">Register</a>
+                            </li>
+                            <li class="nav-item mx-2">
+                                <a class="nav-link text-white" href="login.html">Login</a>
+                            </li>
+                        </template>
+
+                        <!-- Show if logged in -->
+                        <template v-if="loggedIn">
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="products.html">Products</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="sales.html">Sales</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="dashboard.html">Dashboard</a>
+                            </li>
+                        </template>
+                    </ul>
+
+                    <!-- Logout Button -->
+                    <ul class="navbar-nav ms-auto" v-if="loggedIn">
+                        <li class="nav-item">
+                            <button @click="logout" class="nav-link text-white">Logout</button>
+                        </li>
+                    </ul>
+                </div>
             </div>
+        </nav>
+
+        <!-- Login Form -->
+        <div class="container mt-5 d-flex justify-content-center">
+            <form @submit.prevent="loginUser" class="card p-4 shadow-sm" style="width: 400px;">
+                <h3 class="mb-4 text-center">Login</h3>
+
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" v-model="email" class="form-control" placeholder="Enter email" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" v-model="password" class="form-control" placeholder="Enter password"
+                        required />
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100" :disabled="loading">
+                    <span v-if="loading" class="spinner-border spinner-border-sm me-2" role="status"
+                        aria-hidden="true"></span>
+                    {{ loading ? 'Logging in...' : 'Login' }}
+                </button>
+
+                <!-- Message (error/success) -->
+                <div v-if="message" class="mt-3 text-center"
+                    :class="{'text-success': success, 'text-danger': !success}">
+                    {{ message }}
+                </div>
+            </form>
         </div>
-    </nav>
 
-
-    <div id="app" class="container mt-5 d-flex justify-content-center">
-        <form @submit.prevent="loginUser" class="card p-4 shadow-sm" style="width: 400px;">
-            <h3 class="mb-4 text-center">Login</h3>
-
-            <div class="mb-3">
-                <label class="form-label">Email</label>
-                <input type="email" v-model="email" class="form-control" placeholder="Enter email" required />
+        <!-- Footer -->
+        <footer class="text-white text-center py-3"
+            style="background-color: #8e44ad; position: absolute; bottom: 0; width: 100%;">
+            <div class="container">
+                <small>&copy; 2025 MyDuka. All rights reserved.</small>
             </div>
+        </footer>
 
-            <div class="mb-3">
-                <label class="form-label">Password</label>
-                <input type="password" v-model="password" class="form-control" placeholder="Enter password" required />
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100" :disabled="loading">
-                <span v-if="loading" class="spinner-border spinner-border-sm me-2" role="status"
-                    aria-hidden="true"></span>
-                {{ loading ? 'Logging in...' : 'Login' }}
-            </button>
-
-            <!-- Message (error/success) -->
-            <div v-if="message" class="mt-3 text-center" :class="{'text-success': success, 'text-danger': !success}">
-                {{ message }}
-            </div>
-        </form>
     </div>
 
     <!-- Vue & Axios -->
@@ -81,6 +108,7 @@
         new Vue({
             el: '#app',
             data: {
+                loggedIn: !!localStorage.getItem("token"),
                 email: '',
                 password: '',
                 message: '',
@@ -97,6 +125,7 @@
                     })
                         .then(res => {
                             localStorage.setItem("token", res.data.token);
+                            this.loggedIn = true;
                             window.location.href = "products.html";
                         })
                         .catch(err => {
@@ -106,6 +135,11 @@
                         .finally(() => {
                             this.loading = false;
                         });
+                },
+                logout() {
+                    localStorage.removeItem("token");
+                    this.loggedIn = false;
+                    window.location.href = "login.html";
                 }
             }
         });

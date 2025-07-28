@@ -2,93 +2,129 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Home - MyDuka</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
 
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg" style="background-color: #8e44ad;">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#" style="color: white; font-weight: bold;">MyDuka</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                style="border-color: white;">
-                <span class="navbar-toggler-icon" style="filter: brightness(0) invert(1);"></span>
-            </button>
+    <div id="app">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg" style="background-color: #8e44ad;">
+            <div class="container-fluid position-relative">
+        
+                <a class="navbar-brand fw-bold text-white" href="#">MyDuka</a>
+        
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    style="border-color: white;">
+                    <span class="navbar-toggler-icon" style="filter: brightness(0) invert(1);"></span>
+                </button>
+        
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <!-- Centered Links: absolutely centered -->
+                    <ul class="navbar-nav position-absolute top-50 start-50 translate-middle">
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="index.html">Home</a>
+                        </li>
+                        <template v-if="!loggedIn">
+                            <li class="nav-item mx-2">
+                                <a class="nav-link text-white" href="register.html">Register</a>
+                            </li>
+                            <li class="nav-item mx-2">
+                                <a class="nav-link text-white" href="login.html">Login</a>
+                            </li>
+                        </template>
+                        <template v-if="loggedIn">
+                            <li class="nav-item"><a class="nav-link text-white" href="products.html">Products</a></li>
+                            <li class="nav-item"><a class="nav-link text-white" href="sales.html">Sales</a></li>
+                            <li class="nav-item"><a class="nav-link text-white" href="dashboard.html">Dashboard</a></li>
+                        </template>
+                    </ul>
+        
+                    <!-- Logout Button: placed normally but with ms-auto and no flex grow to interfere -->
+                    <ul class="navbar-nav ms-auto" v-if="loggedIn" style="position: static;">
+                        <li class="nav-item">
+                            <button @click="logout" class="nav-link text-white">Logout</button>
+                        </li>
+                    </ul>
+                </div>
+        
+            </div>
+        </nav>
 
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <!-- Centered Links -->
-                <ul class="navbar-nav position-absolute top-50 start-50 translate-middle">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="index.html" style="color: white;">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="products.html" style="color: white;">Products</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="sales.html" style="color: white;">Sales</a>
-                    </li>
-                </ul>
 
-                <!-- Right-aligned Register/Login -->
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="register.html" style="color: white;">Register</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="login.html" style="color: white;">Login</a>
-                    </li>
-                </ul>
+        <!-- Landing Content -->
+        <div class="container mt-5 text-center">
+            <h1 class="mb-4">Welcome to MyDuka</h1>
+            <p class="lead mb-5">
+                MyDuka helps you manage inventory and track sales performance efficiently.
+            </p>
+
+            <div class="row justify-content-center">
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Product Management</h5>
+                            <p class="card-text">Easily view, add, and update product details including prices and stock
+                                levels.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Sales Tracking</h5>
+                            <p class="card-text">Monitor sales performance, quantities sold, and trends over time.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Dashboard Overview</h5>
+                            <p class="card-text">Get a quick snapshot of your inventory and business health in one
+                                place.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </nav>
 
-
-    <!-- Landing Content -->
-    <div class="container mt-5 text-center">
-        <h1 class="mb-4">Welcome to the Home Page</h1>
-        <p class="lead mb-5">Use the navigation bar to access Products and Sales data. Manage your inventory efficiently
-            and
-            stay on top of sales trends.</p>
-
-        <div class="row justify-content-center">
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Product Management</h5>
-                        <p class="card-text">Easily view, add, and update product details including prices and stock
-                            levels.
-                        </p>
-                    </div>
-                </div>
+        <!-- Footer -->
+        <footer class="text-white text-center py-3"
+            style="background-color: #8e44ad; position: absolute; bottom: 0; width: 100%;">
+            <div class="container">
+                <small>&copy; 2025 MyDuka. All rights reserved.</small>
             </div>
+        </footer>
 
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Sales Tracking</h5>
-                        <p class="card-text">Monitor sales performance, quantities sold, and sales trends over time.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Dashboard Overview</h5>
-                        <p class="card-text">Get a quick snapshot of your inventory status and recent activity at a
-                            glance.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
-
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.min.js"></script>
+
+    <script>
+        new Vue({
+            el: "#app",
+            data: {
+                loggedIn: false
+            },
+            mounted() {
+                this.loggedIn = !!localStorage.getItem("token");
+            },
+            methods: {
+                logout() {
+                    localStorage.removeItem("token");
+                    this.loggedIn = false;
+                    window.location.href = "login.html";
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>
