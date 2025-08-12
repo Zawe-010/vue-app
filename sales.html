@@ -26,6 +26,7 @@
                         <li class="nav-item"><a class="nav-link text-white" href="products.html">Products</a></li>
                         <li class="nav-item"><a class="nav-link text-white" href="sales.html">Sales</a></li>
                         <li class="nav-item"><a class="nav-link text-white" href="dashboard.html">Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" href="payments.html">Payments</a></li>
                     </ul>
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item" v-if="!loggedIn"><a class="nav-link text-white"
@@ -97,23 +98,71 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Product ID</th>
+                        <th>Product Name</th>
+                        <th>Selling Price</th>
                         <th>Quantity</th>
+                        <th>Amount</th>
                         <th>Created At</th>
+                        <th>Pay Now</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="sale in sales" :key="sale.id">
-                        <td>{{ sale.id }}</td>
-                        <td>{{ sale.pid }}</td>
-                        <td>{{ sale.quantity }}</td>
+                        <td>{{ sale.sale_id }}</td>
+                        <td>{{ sale.product_name}}</td>
+                        <td>{{ sale.product_sp}}</td>
+                        <td>{{ sale.sale_quantity }}</td>
+                        <td>{{ sale.amount}}</td>
                         <td>{{ sale.created_at }}</td>
+                        <td>
+                            <button class="btn btn-primary btn-sm" @click="openPaymentModal(sale)" data-bs-toggle="modal"
+                                data-bs-target="#paymentModal">
+                                Pay Now
+                            </button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
 
             <!-- No Sales Message -->
             <p v-else class="text-muted">No sales recorded yet.</p>
+        </div>
+
+        <!-- Payment Modal -->
+        <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <form @submit.prevent="submitPayment">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="paymentModalLabel">Make Payment</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+
+                            <!-- Amount Display (read-only) -->
+                            <div class="mb-3">
+                                <label class="form-label">Amount</label>
+                                <input type="number" v-model="paymentData.amount" class="form-control" readonly />
+                            </div> 
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Sale ID</label>
+                                <input v-model="paymentData.sale_id" type="text" class="form-control" readonly>
+                            </div>
+
+                            <!-- Phone Number Input -->
+                            <div class="mb-3">
+                                <label class="form-label">Phone Number</label>
+                                <input v-model="paymentData.phone_number" type="text" class="form-control" required
+                                    placeholder="e.g. 254712345678">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">Send STK Push</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <!-- Footer -->
@@ -142,8 +191,18 @@
                 quantity: "",
                 loading: false,
                 saleMessage: "",
-                loggedIn: false
+                loggedIn: false,
+
+
+                paymentData: {
+                        sale_id: '',
+                        amount: '',
+                        phone_number: ''
+                    },
+                    paymentSuccess: '',
+                    paymentError: ''
             },
+
             methods: {
                 logout() {
                     localStorage.removeItem("token");
@@ -214,8 +273,39 @@
                             }
                         })
                         .finally(() => this.loading = false);
-                }
+                },
+
+                openPaymentModal(sale) {
+                    console.log("sales-----",sale)
+                    this.paymentData.sale_id = sale.sale_id;
+                    this.paymentData.amount = sale.amount;
+                    this.paymentData.phone_number = '';
+                },
+
+                submitPayment() {
+                    const payload = {
+                        sale_id: this.paymentData.sale_id,
+                        amount: this.paymentData.amount,
+                        phone_number: this.paymentData.phone_number
+                    };
+                    console.log("Payload----",payload)
+                    const myheader = {
+                        headers: { 'Authorization': 'Bearer ' + localStorage.getItem("token") }
+                    };
+
+                    axios.post('http://127.0.0.1:5000/api/stkpush', payload, myheader)
+                        .then(() => {
+                            this.paymentSuccess = "Payment initiated successfully!";
+                            this.paymentError = '';
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            this.paymentError = "Failed to initiate payment.";
+                            this.paymentSuccess = '';
+                        });
+                },
             },
+
             mounted() {
                 this.loggedIn = !!localStorage.getItem("token");
 
