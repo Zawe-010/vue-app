@@ -122,7 +122,7 @@
                 getPayments() {
                     this.loading = true;
                     const headers = { headers: { 'Authorization': 'Bearer ' + localStorage.getItem("token") } };
-                    axios.get('http://127.0.0.1:5000/api/payments', headers)
+                    axios.get('http://64.226.85.4:5000/api/payments', headers)
                         .then(result => {
                             this.payments = result.data;
                             this.$nextTick(() => {

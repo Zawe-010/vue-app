@@ -100,7 +100,7 @@
                     }
                     this.loggedIn = true;
 
-                    axios.get("http://127.0.0.1:5000/api/dashboard", {
+                    axios.get("http://64.226.85.4:5000/api/dashboard", {
                         headers: { Authorization: "Bearer " + token }
                     })
                         .then(res => {
