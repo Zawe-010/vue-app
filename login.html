@@ -131,7 +131,7 @@
                             localStorage.setItem("token", res.data.token);
                             console.log("Token:", res.data.token);
                             this.loggedIn = true;
-                            window.location.href = "products.html";
+                            window.location.href = "dashboard.html";
                         })
                         .catch(err => {
                             this.message = err.response?.data?.error || "Login failed";
