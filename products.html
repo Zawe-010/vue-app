@@ -230,6 +230,7 @@
                 }
             },
             mounted() {
+                console.log("Token -----", localStorage.getItem("token"))
                 this.loggedIn = !!localStorage.getItem("token");
                 if (!this.loggedIn) {
                     window.location.href = "login.html";
