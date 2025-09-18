@@ -100,9 +100,13 @@
                     }
                     this.loggedIn = true;
 
-                    axios.get("http://64.226.85.4:5000/api/dashboard", {
-                        headers: { Authorization: "Bearer " + token }
-                    })
+                    const myheader = {
+                        headers: {
+                            'Authorization': 'Bearer ' + localStorage.getItem("token")
+                        }
+                    };
+
+                    axios.get("http://64.226.85.4:5000/api/dashboard", myheader)
                         .then(res => {
                             const profitData = res.data.profit_per_product;
                             const salesData = res.data.sales_per_day;
