@@ -271,7 +271,7 @@
 
                 getSales() {
                     this.loading = true;
-                    axios.get('http://64.226.85.4:5000/api/sales', {
+                    axios.get('https://api.my-duka.co.ke/api/sales', {
                         headers: { Authorization: 'Bearer ' + localStorage.getItem("token") }
                     })
                         .then(result => {
@@ -299,7 +299,7 @@
 
                 gettrans_code() {
                     this.loading = true;
-                    axios.get(`http://64.226.85.4:5000/api/checker/${this.paymentData.sale_id}`, {
+                    axios.get(`https://api.my-duka.co.ke/api/checker/${this.paymentData.sale_id}`, {
                         headers: { Authorization: 'Bearer ' + localStorage.getItem("token") }
                     })
                         .then(result => {
@@ -336,7 +336,7 @@
                     };
 
 
-                    axios.post('http://64.226.85.4:5000/api/stkpush', payload, myheader)
+                    axios.post('https://api.my-duka.co.ke/api/stkpush', payload, myheader)
                         .then(() => {
                             this.paymentSuccess = "Payment initiated successfully!";
                             this.paymentError = '';

@@ -24,7 +24,7 @@
                         <li class="nav-item"><a class="nav-link text-white" href="sales.html">Sales</a></li>
                         <li class="nav-item"><a class="nav-link active text-white" href="dashboard.html">Dashboard</a>
                         </li>
-                        <li class="nav-item"><a class="nav-link active text-white" href="payments.html">Payments</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" href="payments.html">Payments</a></li>
                     </ul>
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item" v-if="!loggedIn"><a class="nav-link text-white"
@@ -107,7 +107,7 @@
                         }
                     };
 
-                    axios.get("http://64.226.85.4:5000/api/dashboard", myheader)
+                    axios.get("https://api.my-duka.co.ke/api/dashboard", myheader)
                         .then(res => {
                             const profitData = res.data.profit_per_product;
                             const salesData = res.data.sales_per_day;
@@ -125,9 +125,13 @@
                             this.loadLinechart();
                         })
                         .catch(err => {
-                            console.error("Error loading dashboard data:", err);
-                            alert("Unauthorized or failed to load dashboard data.");
-                            window.location.href = "login.html";
+                            if (err.response && err.response.status === 401) {
+                                alert("Session expired. Please log in again.");
+                                window.location.href = "login.html";
+                            } else {
+                                console.error("Dashboard load failed:", err);
+                                alert("Something went wrong. Try again later.");
+                            }
                         });
                 },
 

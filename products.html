@@ -171,7 +171,7 @@
                     const myheader = {
                         headers: { 'Authorization': 'Bearer ' + localStorage.getItem("token") }
                     };
-                    axios.get('http://64.226.85.4:5000/api/products', myheader)
+                    axios.get('https://api.my-duka.co.ke/api/products', myheader)
                         .then(result => {
                             this.products = result.data;
 
@@ -206,7 +206,7 @@
                         headers: { 'Authorization': 'Bearer ' + localStorage.getItem("token") }
                     };
 
-                    axios.post('http://64.226.85.4:5000/api/products', data, myheader)
+                    axios.post('https://api.my-duka.co.ke/api/products', data, myheader)
                         .then(res => {
                             this.textcolor = "green";
                             this.message = "Product added successfully!";
