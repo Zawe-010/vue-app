@@ -1,0 +1,60 @@
+DevOps  - Development - writing, shipping,
+        - Operations
+
+        - shorten Development, improve efficiency, deliver
+
+    Pillars
+    - Collaboration
+        Teams + tools(Slack, Whatapp, tele, || Jira,github || Github )
+    - Automation
+    - Continuous Integration - involves merging source code changes into a shared repo
+    - Continuous Delivery - automatically prepares the code changes for release to (Staging/Test, UAT) production
+
+DevSecOps   - Development
+            - Security - 
+            - Operations
+
+Benefits
+1. Faster time to market (Automation)
+2. Better comms and collab
+3. Continous testing and monitoring reduces downtime
+4. Security
+
+DEVOPS LIFECYCLE
+1. PLANING - 
+2. CODE - 
+3. BUILD - 
+4. TEST -
+5. RELEASE - 
+6. DEPLOY -
+7. monitoring
+
+CI/CD PIPELINE  - automated process -> develop, test & DEPLOY
+                - removes manual errors
+                - comms/feedback to developers
+
+    ELEMENTS OF CI/CD PIPELINE
+    - Source Stage -> pipeline is triggered by a source code repo
+                -> A change source code will trigger a notification to the CI/CD.
+    - Build Stage -> Combine the source code and it's dependencies.
+    - Test Stage -> validate the correctness of the code /product
+    - Deploy Stage ->
+
+Github Actions
+- CI/CD Platform that allows you to build, test and deploy pipelines(automated workflows)
+- More than just DevOps -> Events eg workflow that adds release notes || labels whenever a PR
+
+Components of Github Actions
+1. Workflows 
+    - A workflow is automated process aimed at running one or more jobs
+    - Defined YAML/yml
+    - defined in afolder called .github/workflows
+    - Repo can have multiple workflows
+
+2. Events - an activity in the repo that will trigger a workflow
+
+3. Jobs - these are steps in a workflow 
+
+4. actions - predefined, reusable set of jobs to perform a specific task. eg -> eg an action to login to a remote server
+
+5. Runners - a server that runs your workflows whenever theyre triggered
